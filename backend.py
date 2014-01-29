@@ -22,6 +22,7 @@ def restore(hash):
 		storage.restore(key)
 		conn.execute('INSERT INTO restores (hash, done, time) \
 		              VALUES (?, 0, ?)', (hash, int(time.time())))
+		conn.commit()
 	else:
 		raise errors.ExceededQuotaError
 
