@@ -3,6 +3,7 @@
 import backend
 import errors
 import os
+import time
 import flask
 
 basedir = os.path.dirname(__file__)
@@ -10,14 +11,22 @@ app = flask.Flask(__name__, static_folder=os.path.join(basedir, 'static'))
 
 def text(status, content):
 	return flask.Response(
-	               response=content,
+	               response='%s\n' % content,
 	               status=status,
 	               mimetype='text/plain'
 	       )
 
 @app.route('/')
 def hello():
-	return text(200, 'Hello, world!')
+	count = 0
+	t = int(time.time()) - 86400
+	r = 'Hello, world!\n\n'
+	r += '%d restorations in the last 24 hours:\n\n'
+	for i in backend.conn.execute('SELECT * FROM restores WHERE time > ?',
+	                              (t, )):
+		r += '  * %s\n' % i[0]
+		count += 1
+	return text(200, r % count)
 
 @app.route('/blob/<hash>')
 def blob(hash):
