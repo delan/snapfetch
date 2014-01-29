@@ -32,6 +32,7 @@ def retrieve(hash):
 	if status == storage.STATUS_FROZEN:
 		restore(hash)
 	elif status == storage.STATUS_LIVE:
+		# TODO: update until field in database for restoration expiry?
 		return storage.url(key)
 	elif status == storage.STATUS_RESTORING:
 		pass
